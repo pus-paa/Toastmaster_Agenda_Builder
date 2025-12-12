@@ -1,9 +1,9 @@
-const Agenda = () => {
-  return (
-    <div>
-      <h1 className="text-3xl font-bold mb-4">Your Agendas</h1>
-    </div>
-  );
-};
 
-export default Agenda;
+import Agenda from "@/pages/Agenda";
+const AgendaPage = () => {
+  return <Agenda onSuccess={() => {
+    console.log('Agenda created successfully');
+  }} />;
+}
+
+export default AgendaPage;

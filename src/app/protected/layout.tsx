@@ -16,9 +16,9 @@ export default async function ProtectedLayout({
 	}
 
 	return (
-		<div className="min-h-screen bg-gray-50">
-			<header className="bg-white shadow-sm">
-				<div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+		<div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
+			<header className="bg-white shadow-sm flex-shrink-0 z-10">
+				<div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
 					<div>
 						<Link href="/protected" className="text-xl font-bold text-blue-600">
 							Meeting Agenda
@@ -33,7 +33,11 @@ export default async function ProtectedLayout({
 				</div>
 			</header>
 
-			<main className="max-w-4xl mx-auto px-4 py-8">{children}</main>
+			<main className="flex-1 overflow-auto">
+				<div className="max-w-7xl mx-auto px-4 py-6 h-full">
+					{children}
+				</div>
+			</main>
 		</div>
 	);
 }

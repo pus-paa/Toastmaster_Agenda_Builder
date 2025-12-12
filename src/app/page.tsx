@@ -4,7 +4,7 @@ export default function Page() {
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-blue-50">
       <h1 className="text-5xl font-bold mb-4 text-gray-800">Welcome</h1>
-      <p className="text-xl text-gray-600 mb-8">Meeting Agenda Manager</p>
+      <p className="text-xl text-gray-600 mb-8">Toastmaster Agenda Builder</p>
       
       <div className="space-y-4">
         <Link

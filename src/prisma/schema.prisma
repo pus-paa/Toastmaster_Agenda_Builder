@@ -13,6 +13,7 @@ model User {
   name          String    @db.VarChar(255)
   email         String?   @unique
   password      String?   // for credentials login
+  phoneNumber   String?   @db.VarChar(255)
   clubs         Club[]    // relationship to clubs created by user
   createdAt     DateTime    @default(now())
 }
@@ -21,6 +22,7 @@ model Club {
   clubId        Int          @id
   name          String       @db.VarChar(255)
   region        String       @db.VarChar(255)
+  district      String        @db.VarChar(255) 
   division      String       @db.VarChar(255)
   area          String       @db.VarChar(255)
   charteredDate DateTime    

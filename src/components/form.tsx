@@ -35,6 +35,18 @@ export function Form({
         />
       </div>
       <div>
+        <label htmlFor="phoneNumber" className= "block text-lg font-bold text-gray-700 mb-2">
+          Phone Number (optional)
+            </label>
+            <input
+            id="phoneNumber"
+            name="phoneNumber"
+            type="tel"
+            placeholder="Enter your phone number"
+            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:outline-none"
+            />
+      </div>
+      <div>
         <label htmlFor="password" className="block text-lg font-bold text-gray-700 mb-2">
           Password
         </label>

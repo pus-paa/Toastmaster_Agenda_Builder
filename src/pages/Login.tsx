@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import InputField from "@/components/Input";
+
+
 export default function Login() {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
@@ -57,7 +59,7 @@ export default function Login() {
                     <InputField
                         id="email"
                         name="email"
-                        type="email"
+                        type="text"
                         label="Email"
                         placeholder="example@email.com"
                         autoComplete="email"

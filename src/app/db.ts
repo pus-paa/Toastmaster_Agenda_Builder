@@ -15,11 +15,44 @@ export async function getUser(email: string) {
   });
 }
 
-export async function createUser(name: string, email: string, password: string, ) {
+export async function getUserByEmailOrPhone(emailOrPhone: string){
+  return await prisma.user.findFirst({
+    where:{
+      OR:[
+        {email:emailOrPhone},
+        {phoneNumber:emailOrPhone}
+
+      ]
+    }
+  });
+}
+
+
+export async function createUserWithPhone(
+  name: string,
+  email: string|null,
+  phoneNumber: string|null,
+  password:string,
+) {
   let salt = genSaltSync(10);
   let hash = hashSync(password, salt);
 
   return await prisma.user.create({
-    data: { name, email, password: hash|| null },
+    data:{
+      name,
+      email: email||null,
+      phoneNumber: phoneNumber||null,
+      password: hash,
+    },
   });
 }
+export async function createUser(name: string, email: string, phoneNumber: string|null, password: string, ) {
+  let salt = genSaltSync(10);
+  let hash = hashSync(password, salt);
+
+  return await prisma.user.create({
+    data: { name, email, phoneNumber, password: hash|| null },
+  });
+}
+
+
