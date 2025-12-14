@@ -17,26 +17,28 @@ export default async function ProtectedLayout({
 
 	return (
 		<div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
-			<header className="bg-white shadow-sm flex-shrink-0 z-10">
-				<div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-					<div>
-						<Link href="/protected" className="text-xl font-bold text-blue-600">
-							Meeting Agenda
+			{/* Top Navigation */}
+			<header className="bg-white border-b border-gray-200 flex-shrink-0 z-20">
+				<div className="px-6 py-3.5 flex items-center justify-between">
+					<div className="flex items-center gap-3">
+						<Link href="/protected" className="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors">
+							📋 Meeting Agenda
 						</Link>
-						<p className="text-sm text-gray-600">Signed in as {session?.user?.email}</p>
 					</div>
 
-					<div className="flex items-center gap-3">
-						<span className="text-gray-700">Hi, {session?.user?.name}</span>
+					<div className="flex items-center gap-4">
+						<div className="text-right hidden sm:block">
+							<p className="text-sm font-medium text-gray-700">{session?.user?.name}</p>
+							<p className="text-xs text-gray-500">{session?.user?.email}</p>
+						</div>
 						<SignOut />
 					</div>
 				</div>
 			</header>
 
-			<main className="flex-1 overflow-auto">
-				<div className="max-w-7xl mx-auto px-4 py-6 h-full">
-					{children}
-				</div>
+			{/* Main Content Area */}
+			<main className="flex-1 overflow-hidden">
+				{children}
 			</main>
 		</div>
 	);

@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { meetingId, role, assignedTo, memberId, memberDetail, allocatedTime, sequence } = body;
 
-    // Validation
+    
     if (!meetingId || !role || !assignedTo || sequence === undefined) {
       return NextResponse.json(
         { error: 'Meeting ID, role, assignedTo, and sequence are required' },

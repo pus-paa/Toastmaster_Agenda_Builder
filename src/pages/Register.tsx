@@ -1,41 +1,111 @@
+'use client';
+
 import Link from "next/link";
-import { Form } from "@/components/form";
-import { SubmitButton } from "@/components/submit-button";
-import { createUserWithPhone,getUserByEmailOrPhone } from "@/app/db";
-import { redirect } from "next/navigation";
-
-
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import InputField from "@/components/Input";
 
 function Register() {
-    async function register(formData: FormData) {
-        'use server';
-        let name = formData.get('name') as string;
-        let email = formData.get('email') as string;
-        let phoneNumber = formData.get('phoneNumber') as string;
-        let password = formData.get('password') as string;
+    const router = useRouter();
+    const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
-         if (!email && !phoneNumber) {
-    return 'Please provide either email or phone number';
-  }
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        setIsLoading(true);
+        setError(null);
 
+        const formData = new FormData(e.currentTarget);
+        const name = formData.get('name') as string;
+        const email = formData.get('email') as string;
+        const phoneNumber = formData.get('phoneNumber') as string;
+        const password = formData.get('password') as string;
 
-        let user = await getUserByEmailOrPhone(email);
-        if (user) {
-            return 'User already exists';
-        } else {
-            await createUserWithPhone(
-                name, email, phoneNumber, password);
-                redirect('/login');
+        try {
+            const response = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, email, phoneNumber, password }),
+            });
+
+            const result = await response.json();
+
+            if (result.error || !response.ok) {
+                setError(result.error || 'Registration failed');
+                setIsLoading(false);
+            } else {
+                router.push('/login');
+                router.refresh();
+            }
+        } catch (err) {
+            setError('An error occurred. Please try again.');
+            setIsLoading(false);
         }
     }
+
     return (
-        <div className="flex h-screen w-screen items-center justify-center bg-blue-100" >
+        <div className="flex h-screen w-screen items-center justify-center bg-blue-100">
             <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
                 <h1 className="text-3xl font-bold mb-2 text-center text-blue-600">Sign Up</h1>
                 <p className="text-center text-gray-600 mb-6">Create a new account</p>
 
-                <Form action={register}>
-                    <SubmitButton>Sign Up</SubmitButton>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    {error && (
+                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                            {error}
+                        </div>
+                    )}
+                    <InputField
+                        id="name"
+                        name="name"
+                        type="text"
+                        label="Name"
+                        placeholder="Your Name"
+                        autoComplete="name"
+                        className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:outline-none"
+                        required
+                    />
+
+                    <InputField
+                        id="email"
+                        name="email"
+                        type="email"
+                        label="Email"
+                        placeholder="example@email.com"
+                        autoComplete="email"
+                        className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:outline-none"
+                    />
+
+                    <InputField
+                        id="phoneNumber"
+                        name="phoneNumber"
+                        type="tel"
+                        label="Phone Number"
+                        placeholder="+1234567890"
+                        autoComplete="tel"
+                        className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:outline-none"
+                    />
+
+                    <InputField
+                        label="Password"
+                        id="password"
+                        name="password"
+                        type="password"
+                        placeholder="Enter your password"
+                        required
+                        className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:outline-none"
+                    />
+
+                    <button
+                        type="submit"
+                        disabled={isLoading}
+                        className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {isLoading ? 'Signing up...' : 'Sign Up'}
+                    </button>
+
                     <div className="text-center mt-4">
                         <p className="text-gray-600">
                             Already have an account?{''}
@@ -44,11 +114,9 @@ function Register() {
                             </Link>
                         </p>
                     </div>
-                </Form>
+                </form>
             </div>
-
         </div>
-
     );
 }
 

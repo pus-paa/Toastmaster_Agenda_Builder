@@ -1,34 +1,41 @@
 'use client';
 
-interface Sidebar {
-  activeTab: 'meeting' | 'agenda';
-  onTabChange: (tab: 'meeting' | 'agenda') => void;
-}
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-export default function Sidebar({ activeTab, onTabChange }: Sidebar) {
+export default function Sidebar() {
+  const pathname = usePathname();
+  
+  const isActiveMeeting = pathname?.startsWith('/protected/meeting');
+  const isActiveAgenda = pathname?.startsWith('/protected/agenda');
+
   return (
-    <div className="w-64 border-r bg-gray-50 p-4 min-h-screen">
-<h2 className="text-wrap font-bold mb-6  text-blue-600">Dashboard</h2>
-
-      <nav className="space-y-2">
-        <button
-          onClick={() => onTabChange('meeting')}
-          className={`w-full text-left px-4 py-2 rounded ${
-            activeTab === 'meeting' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'
+    <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
+      <nav className="flex-1 px-3 py-4 space-y-1">
+        <Link
+          href="/protected/meetings"
+          className={`w-full text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 flex items-center gap-3 ${
+            isActiveMeeting
+              ? 'bg-blue-50 text-blue-700 shadow-sm'
+              : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
           }`}
         >
-          Meeting
-        </button>
+          <span className="text-lg">📅</span>
+          <span>Meetings</span>
+        </Link>
 
-        <button
-          onClick={() => onTabChange('agenda')}
-          className={`w-full text-left px-4 py-2 rounded ${
-            activeTab === 'agenda' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'
+        <Link
+          href="/protected/agendas"
+          className={`w-full text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 flex items-center gap-3 ${
+            isActiveAgenda
+              ? 'bg-blue-50 text-blue-700 shadow-sm'
+              : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
           }`}
         >
-          Agenda
-        </button>
+          <span className="text-lg">📝</span>
+          <span>Agendas</span>
+        </Link>
       </nav>
-    </div>
+    </aside>
   );
 }

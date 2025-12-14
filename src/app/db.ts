@@ -1,3 +1,4 @@
+import 'server-only';
 import { PrismaClient } from '@prisma/client';
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 import { PrismaPg } from '@prisma/adapter-pg';

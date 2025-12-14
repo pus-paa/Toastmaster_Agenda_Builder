@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface AgendaProps {
-  onSuccess?: () => void; 
+  onSuccess?: () => void;
+  onBack?: () => void;
 }
 
-export default function Agenda({ onSuccess }: AgendaProps) {
+export default function Agenda({ onSuccess, onBack }: AgendaProps) {
   const [formData, setFormData] = useState({
     meetingId: '',
     role: '',
@@ -20,6 +22,7 @@ export default function Agenda({ onSuccess }: AgendaProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -59,6 +62,12 @@ export default function Agenda({ onSuccess }: AgendaProps) {
       });
 
       if (onSuccess) onSuccess();
+      
+      if (onBack) {
+        setTimeout(() => {
+          router.push('/protected/agendas');
+        }, 1500);
+      }
     } catch (err: any) {
       setError(err.message || 'Something went wrong');
     } finally {
@@ -67,8 +76,29 @@ export default function Agenda({ onSuccess }: AgendaProps) {
   };
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-blue-100">
+    <div className="w-full h-full flex items-center justify-center p-6">
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="mb-4 flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
+            </svg>
+            <span>Back to List</span>
+          </button>
+        )}
         <h1 className="text-3xl font-bold mb-2 text-center text-blue-600">Create Agenda</h1>
         <p className="text-center text-gray-600 mb-6">Fill in the agenda details</p>
 

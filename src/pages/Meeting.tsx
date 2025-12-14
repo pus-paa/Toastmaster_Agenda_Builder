@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function Meeting({ onSuccess }: { onSuccess: () => void }) {
+export default function Meeting({ onSuccess, onBack }: { onSuccess: () => void; onBack?: () => void }) {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     meetingNumber: '',
     meetingTheme: '',
@@ -46,6 +48,11 @@ export default function Meeting({ onSuccess }: { onSuccess: () => void }) {
         startTime: '',
         toastMasterOfDay: '',
       });
+      
+      // Redirect to meeting list after 1.5 seconds
+      setTimeout(() => {
+        router.push('/protected/meetings');
+      }, 1500);
     } catch (err: any) {
       setError(err.message || 'Something went wrong');
     } finally {
@@ -54,8 +61,29 @@ export default function Meeting({ onSuccess }: { onSuccess: () => void }) {
   };
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-blue-100">
+    <div className="w-full h-full flex items-center justify-center p-6">
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="mb-4 flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
+            </svg>
+            <span>Back to List</span>
+          </button>
+        )}
         <h1 className="text-3xl font-bold mb-2 text-center text-blue-600">Create Meeting</h1>
         <p className="text-center text-gray-600 mb-6">Fill in the meeting details</p>
 
