@@ -34,17 +34,16 @@ function Register() {
 
             if (result.error || !response.ok) {
                 setError(result.error || 'Registration failed');
-                setIsLoading(false);
             } else {
                 router.push('/login');
-                router.refresh();
             }
-        } catch (err) {
+        } catch (error) {
+            console.error('Registration error:', error);
             setError('An error occurred. Please try again.');
+        } finally {
             setIsLoading(false);
         }
     }
-
     return (
         <div className="flex h-screen w-screen items-center justify-center bg-blue-100">
             <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
@@ -108,7 +107,7 @@ function Register() {
 
                     <div className="text-center mt-4">
                         <p className="text-gray-600">
-                            Already have an account?{''}
+                            Already have an account?{' '}
                             <Link href="/login" className="text-blue-600 font-bold hover:underline">
                                 Login here
                             </Link>
@@ -116,7 +115,9 @@ function Register() {
                     </div>
                 </form>
             </div>
+
         </div>
+
     );
 }
 

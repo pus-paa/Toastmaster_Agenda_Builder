@@ -1,16 +1,26 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface AgendaProps {
   onSuccess?: () => void;
   onBack?: () => void;
 }
 
+interface Meeting {
+  id: number;
+  meetingNumber: number;
+  meetingTheme: string;
+  meetingDate: string;
+}
+
 export default function Agenda({ onSuccess, onBack }: AgendaProps) {
+  const searchParams = useSearchParams();
+  const meetingIdFromUrl = searchParams?.get('meetingId') || '';
+  
   const [formData, setFormData] = useState({
-    meetingId: '',
+    meetingId: meetingIdFromUrl,
     role: '',
     assignedTo: '',
     memberId: '',
@@ -19,10 +29,30 @@ export default function Agenda({ onSuccess, onBack }: AgendaProps) {
     sequence: '',
   });
 
+  const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMeetings, setLoadingMeetings] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const router = useRouter();
+
+  useEffect(() => {
+    fetchMeetings();
+  }, []);
+
+  const fetchMeetings = async () => {
+    try {
+      setLoadingMeetings(true);
+      const res = await fetch('/api/meetings');
+      if (!res.ok) throw new Error('Failed to fetch meetings');
+      const data = await res.json();
+      setMeetings(data);
+    } catch (err: any) {
+      console.error('Error fetching meetings:', err);
+    } finally {
+      setLoadingMeetings(false);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -106,15 +136,33 @@ export default function Agenda({ onSuccess, onBack }: AgendaProps) {
           {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">{error}</div>}
           {success && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">{success}</div>}
 
-          <input
-            type="number"
-            name="meetingId"
-            placeholder="Meeting ID"
-            value={formData.meetingId}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Meeting</label>
+            {loadingMeetings ? (
+              <div className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg bg-gray-50 text-gray-500">
+                Loading meetings...
+              </div>
+            ) : meetings.length === 0 ? (
+              <div className="w-full px-4 py-2 border-2 border-red-300 rounded-lg bg-red-50 text-red-700">
+                No meetings available. <a href="/protected/meeting/create" className="underline font-medium">Create a meeting first</a>
+              </div>
+            ) : (
+              <select
+                name="meetingId"
+                value={formData.meetingId}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+              >
+                <option value="">Select a meeting</option>
+                {meetings.map((meeting) => (
+                  <option key={meeting.id} value={meeting.id}>
+                    Meeting #{meeting.meetingNumber} - {meeting.meetingTheme}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
 
           <input
             type="text"

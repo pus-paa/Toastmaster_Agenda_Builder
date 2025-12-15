@@ -170,9 +170,7 @@ export default function AgendaList() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
-                        onClick={() => {
-                          alert(`View details for Agenda #${agenda.id}`);
-                        }}
+                        onClick={() => router.push(`/protected/agenda/${agenda.id}`)}
                         className="text-blue-600 hover:text-blue-900"
                       >
                         View
