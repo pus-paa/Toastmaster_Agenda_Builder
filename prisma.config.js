@@ -1,6 +1,6 @@
-import 'dotenv/config';
+require('dotenv').config({ path: '.env.local' });
 
-export default {
+module.exports = {
   schema: './src/prisma/schema.prisma',
   datasource: {
     url: process.env.DATABASE_URL,
