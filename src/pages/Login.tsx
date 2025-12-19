@@ -35,7 +35,7 @@ export default function Login() {
                 setError(result.error || 'Invalid email or password');
                 setIsLoading(false);
             } else {
-                router.push('/protected/meetings');
+                router.push('/protected');
                 router.refresh();
             }
         } catch (err) {

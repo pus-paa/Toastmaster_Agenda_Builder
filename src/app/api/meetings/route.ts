@@ -32,9 +32,9 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { meetingNumber, meetingTheme, meetingDate, startTime, toastMasterOfDay } = body;
+    const { meetingNumber, meetingTheme, meetingDate, startTime, toastMasterOfDay, clubId } = body;
 
-    if (!meetingNumber || !meetingTheme || !meetingDate || !startTime || !toastMasterOfDay) {
+    if ([meetingNumber, meetingTheme, meetingDate, startTime, toastMasterOfDay, clubId].some(v => v === undefined || v === null)) {
       return NextResponse.json(
         { error: 'All fields are required' },
         { status: 400 }
@@ -59,6 +59,7 @@ export async function POST(request: NextRequest) {
         meetingDate,
         startTime,
         toastMasterOfDay,
+        clubId: parseInt(clubId),
       },
     });
 

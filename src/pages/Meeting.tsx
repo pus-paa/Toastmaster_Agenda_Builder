@@ -11,6 +11,7 @@ export default function Meeting({ onSuccess, onBack }: { onSuccess: () => void; 
     meetingDate: '',
     startTime: '',
     toastMasterOfDay: '',
+    clubId: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -33,6 +34,7 @@ export default function Meeting({ onSuccess, onBack }: { onSuccess: () => void; 
         body: JSON.stringify({
           ...formData,
           meetingNumber: parseInt(formData.meetingNumber),
+          clubId: formData.clubId,
         }),
       });
 
@@ -47,6 +49,7 @@ export default function Meeting({ onSuccess, onBack }: { onSuccess: () => void; 
         meetingDate: '',
         startTime: '',
         toastMasterOfDay: '',
+        clubId: '',
       });
       
       // Redirect to meeting list after 1.5 seconds
@@ -88,6 +91,15 @@ export default function Meeting({ onSuccess, onBack }: { onSuccess: () => void; 
         <p className="text-center text-gray-600 mb-6">Fill in the meeting details</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+                    <input
+                      type="number"
+                      name="clubId"
+                      placeholder="Club ID"
+                      value={formData.clubId}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:outline-none"
+                    />
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
               {error}

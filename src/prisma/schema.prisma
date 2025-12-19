@@ -1,67 +1,85 @@
-// Prisma Schema for Meeting Agenda
-
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
+  engineType = "binary"
 }
 
 datasource db {
-  provider = "postgresql"
+    provider = "postgresql"
 
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String    @db.VarChar(255)
-  email         String?   @unique
-  password      String?   // for credentials login
-  phoneNumber   String?   @db.VarChar(255)
-  clubs         Club[]    // relationship to clubs created by user
-  createdAt     DateTime    @default(now())
+  id           String   @id @default(cuid())
+  name         String   @db.VarChar(255)
+  email        String   @unique
+  password     String?
+  phoneNumber  String?  @db.VarChar(255)
+  role         String?  @db.VarChar(255)
+
+  createdClubs Club[]   @relation("UserCreatedClubs")
+
+  createdAt    DateTime @default(now())
 }
 
+
 model Club {
-  clubId        Int          @id
-  name          String       @db.VarChar(255)
-  region        String       @db.VarChar(255)
-  district      String        @db.VarChar(255) 
-  division      String       @db.VarChar(255)
-  area          String       @db.VarChar(255)
-  charteredDate DateTime    
-  createdBy     String        //User ID
-  user          User         @relation(fields:[createdBy], references:[id])
+  clubId        Int @id
+  name          String @db.VarChar(255)
+  region        String @db.VarChar(255)
+  district      String @db.VarChar(255)
+  division      String @db.VarChar(255)
+  area          String @db.VarChar(255)
+  charteredDate DateTime
+
+  createdBy     String
+  user          User @relation("UserCreatedClubs", fields: [createdBy], references: [id])
+
   members       Member[]
-  createdAt     DateTime     @default(now())
+  meetings      Meeting[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Meeting {
-    id                  Int @id @default(autoincrement())
-    meetingNumber       Int @unique
-    meetingTheme        String @db.VarChar(64)
-    meetingDate         String @db.VarChar(64)
-    startTime           String @db.VarChar(64)
-    toastMasterOfDay    String @db.VarChar()
-    agendas             Agenda[]
-}
-model Agenda{
-    id            Int @id @default(autoincrement())
-    meetingId     Int
-    meeting       Meeting   @relation(fields: [meetingId], references: [id], onDelete: Cascade)
-    role          String @db.VarChar(64)
-    assignedTo    String  @db.VarChar(64)
-    memberId      Int?
-    member        Member?   @relation(fields: [memberId], references: [id], onDelete: SetNull)
-    memberDetail  String? @db.VarChar(64)
-    allocatedTime String?  @db.VarChar(64)
-    sequence      Int
+  id               Int @id @default(autoincrement())
+  meetingNumber    Int @unique
+  meetingTheme     String @db.VarChar(64)
+  meetingDate      String @db.VarChar(64)
+  startTime        String @db.VarChar(64)
+  toastMasterOfDay String @db.VarChar(64)
 
+  clubId           Int
+  club             Club @relation(fields: [clubId], references: [clubId])
+
+  agendas          Agenda[]
 }
+
+model Agenda {
+  id            Int @id @default(autoincrement())
+  meetingId     Int
+  meeting       Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+
+  role          String @db.VarChar(64)
+  assignedTo    String @db.VarChar(64)
+
+  memberId      Int?
+  member        Member? @relation(fields: [memberId], references: [id], onDelete: SetNull)
+
+  memberDetail  String? @db.VarChar(64)
+  allocatedTime String? @db.VarChar(64)
+  sequence      Int
+}
+
 model Member {
-    id               Int @id @default(autoincrement())
-    name             String @db.VarChar(64)
-    emailAddress     String @unique @db.VarChar(64)
-    phoneNumber      String @db.VarChar(64)
-    clubId           Int
-    club             Club @relation(fields: [clubId], references: [clubId])
-    introduction     String @db.Text
-    agendas          Agenda[]
+  id            Int @id @default(autoincrement())
+  name          String @db.VarChar(64)
+  emailAddress  String @unique @db.VarChar(64)
+  phoneNumber   String @db.VarChar(64)
+  introduction  String @db.Text
+
+  clubId        Int
+  club          Club @relation(fields: [clubId], references: [clubId])
+
+  agendas       Agenda[]
 }
